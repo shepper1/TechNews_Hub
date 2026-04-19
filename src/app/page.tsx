@@ -180,21 +180,6 @@ function HomePageContent() {
             ))}
 
             <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
-              <button
-                onClick={() => setTrendingOnly(t => !t)}
-                style={{
-                  display: 'inline-flex', alignItems: 'center', gap: '6px',
-                  padding: '8px 16px', borderRadius: '9999px',
-                  fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer',
-                  background: trendingOnly ? '#ef4444' : 'transparent',
-                  color: trendingOnly ? '#fff' : 'var(--color-text-secondary)',
-                  border: trendingOnly ? '1.5px solid #ef4444' : '1.5px solid var(--color-border)',
-                }}
-              >
-                <Flame style={{ width: 14, height: 14 }} />
-                Trending
-              </button>
-
               <select
                 value={sortBy}
                 onChange={e => setSortBy(e.target.value as 'date' | 'relevance')}

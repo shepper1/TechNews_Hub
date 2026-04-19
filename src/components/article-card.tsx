@@ -88,36 +88,18 @@ export default function ArticleCard({ article, index, onBookmark, isBookmarked }
           />
         )}
 
-        {/* Text placeholder — shown when no image (or image fails) */}
+        {/* Placeholder — shown when no image (or image fails / low-res) */}
         <div
           style={{
             position: 'absolute', inset: 0,
             display: article.imageUrl ? 'none' : 'flex',
-            flexDirection: 'column',
-            justifyContent: 'flex-end',
-            padding: '1.25rem',
+            alignItems: 'center',
+            justifyContent: 'center',
             background: `linear-gradient(145deg, ${cat.gradFrom}, ${cat.gradTo})`,
           }}
         >
-          {/* Subtle noise/pattern overlay */}
           <div style={{ position: 'absolute', inset: 0, opacity: 0.06, backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")', backgroundSize: '30px 30px' }} />
-          <span style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: '0.5rem', position: 'relative' }}>
-            {article.source}
-          </span>
-          <p style={{
-            color: '#fff',
-            fontSize: '0.925rem',
-            fontWeight: 700,
-            lineHeight: 1.4,
-            display: '-webkit-box',
-            WebkitLineClamp: 3,
-            WebkitBoxOrient: 'vertical',
-            overflow: 'hidden',
-            position: 'relative',
-            textShadow: '0 1px 3px rgba(0,0,0,0.3)',
-          }}>
-            {article.title}
-          </p>
+          <span style={{ fontSize: '3.5rem', opacity: 0.6, position: 'relative' }}>{cat.emoji}</span>
         </div>
 
         {/* Hover dark overlay (image only) */}

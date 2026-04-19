@@ -2,7 +2,16 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Sun, Moon, Zap, Heart, Flame } from 'lucide-react';
+import { Sun, Moon, Zap, Heart, Home } from 'lucide-react';
+
+const navLinkStyle = {
+  display: 'inline-flex', alignItems: 'center', gap: '6px',
+  padding: '7px 14px', borderRadius: '9999px',
+  fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer',
+  border: '1.5px solid var(--color-border)',
+  background: 'transparent', color: 'var(--color-text-secondary)',
+  textDecoration: 'none', transition: 'all 0.15s',
+} as const;
 
 export default function Navbar() {
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
@@ -44,29 +53,24 @@ export default function Navbar() {
 
           <div className="flex-1" />
 
-          {/* Nav links */}
-          <div className="flex items-center gap-1">
-            <Link href="/" className="text-xs font-semibold text-[var(--color-text-secondary)] hover:text-[var(--color-text)] px-3 py-2 rounded-lg hover:bg-[var(--color-surface-hover)] transition-all">
+          {/* Nav links + theme toggle — uniform pill style */}
+          <div className="flex items-center gap-2">
+            <Link href="/" style={navLinkStyle} className="hover:border-indigo-500/50 hover:text-[var(--color-text)]">
+              <Home style={{ width: 14, height: 14 }} />
               Accueil
             </Link>
-            <Link href="/?trending=true" className="flex items-center gap-1.5 text-xs font-semibold text-[var(--color-text-secondary)] hover:text-red-400 px-3 py-2 rounded-lg hover:bg-[var(--color-surface-hover)] transition-all">
-              <Flame className="w-3.5 h-3.5" />
-              Trending
-            </Link>
-            <Link href="/favorites" className="flex items-center gap-1.5 text-xs font-semibold text-[var(--color-text-secondary)] hover:text-amber-400 px-3 py-2 rounded-lg hover:bg-[var(--color-surface-hover)] transition-all">
-              <Heart className="w-3.5 h-3.5" />
+            <Link href="/favorites" style={navLinkStyle} className="hover:border-amber-500/50 hover:text-amber-400">
+              <Heart style={{ width: 14, height: 14 }} />
               Favoris
             </Link>
-          </div>
-
-          {/* Theme toggle only */}
-          <div className="flex items-center shrink-0 ml-2">
             <button
               onClick={() => setTheme(t => t === 'dark' ? 'light' : 'dark')}
-              className="theme-toggle"
+              style={navLinkStyle}
               aria-label={theme === 'dark' ? 'Mode clair' : 'Mode sombre'}
+              className="hover:border-indigo-500/50 hover:text-[var(--color-text)]"
             >
-              {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              {theme === 'dark' ? <Sun style={{ width: 14, height: 14 }} /> : <Moon style={{ width: 14, height: 14 }} />}
+              {theme === 'dark' ? 'Clair' : 'Sombre'}
             </button>
           </div>
         </div>
