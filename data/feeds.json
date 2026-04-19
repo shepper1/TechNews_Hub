@@ -1,0 +1,192 @@
+{
+  "feeds": [
+    {
+      "name": "Numerama",
+      "url": "https://www.numerama.com/feed/",
+      "category": "ia",
+      "enabled": true
+    },
+    {
+      "name": "Le Monde Informatique – IA",
+      "url": "https://www.lemondeinformatique.fr/flux-rss/thematique/intelligence-artificielle/rss.xml",
+      "category": "ia",
+      "enabled": true
+    },
+    {
+      "name": "Next.ink",
+      "url": "https://next.ink/feed/",
+      "category": "ia",
+      "enabled": true
+    },
+    {
+      "name": "ZDNet France",
+      "url": "https://www.zdnet.fr/feeds/rss/actualites/",
+      "category": "ia",
+      "enabled": true
+    },
+    {
+      "name": "IT-Connect",
+      "url": "https://www.it-connect.fr/feed/",
+      "category": "devops",
+      "enabled": true
+    },
+    {
+      "name": "Developpez.com",
+      "url": "https://www.developpez.com/index/rss",
+      "category": "devops",
+      "enabled": true
+    },
+    {
+      "name": "Korben",
+      "url": "https://korben.info/feed",
+      "category": "devops",
+      "enabled": true
+    },
+    {
+      "name": "Stéphane Robert – DevOps",
+      "url": "https://blog.stephane-robert.info/rss.xml",
+      "category": "devops",
+      "enabled": true
+    },
+    {
+      "name": "Grotte du Barbu",
+      "url": "https://www.grottedubarbu.fr/feed/",
+      "category": "devops",
+      "enabled": true
+    },
+    {
+      "name": "Dev.to – Ansible",
+      "url": "https://dev.to/feed/tag/ansible",
+      "category": "devops",
+      "enabled": true
+    },
+    {
+      "name": "Dev.to – Terraform",
+      "url": "https://dev.to/feed/tag/terraform",
+      "category": "devops",
+      "enabled": true
+    },
+    {
+      "name": "Dev.to – Jenkins",
+      "url": "https://dev.to/feed/tag/jenkins",
+      "category": "devops",
+      "enabled": true
+    },
+    {
+      "name": "Dev.to – Docker",
+      "url": "https://dev.to/feed/tag/docker",
+      "category": "devops",
+      "enabled": true
+    },
+    {
+      "name": "LinuxFr.org",
+      "url": "https://linuxfr.org/news.atom",
+      "category": "linux",
+      "enabled": true
+    },
+    {
+      "name": "Developpez.com – Linux",
+      "url": "https://linux.developpez.com/index/rss",
+      "category": "linux",
+      "enabled": true
+    },
+    {
+      "name": "Malekal",
+      "url": "https://www.malekal.com/feed/",
+      "category": "windows",
+      "enabled": true
+    },
+    {
+      "name": "Silicon.fr",
+      "url": "https://www.silicon.fr/feed/",
+      "category": "infrastructure",
+      "enabled": true
+    },
+    {
+      "name": "Le Monde Informatique – Cloud",
+      "url": "https://www.lemondeinformatique.fr/flux-rss/thematique/cloud-computing/rss.xml",
+      "category": "infrastructure",
+      "enabled": true
+    },
+    {
+      "name": "LeMagIT",
+      "url": "https://www.lemagit.fr/rss/actualites.xml",
+      "category": "infrastructure",
+      "enabled": true
+    },
+    {
+      "name": "Dev.to – Proxmox",
+      "url": "https://dev.to/feed/tag/proxmox",
+      "category": "infrastructure",
+      "enabled": true
+    },
+    {
+      "name": "Dev.to – OpenStack",
+      "url": "https://dev.to/feed/tag/openstack",
+      "category": "infrastructure",
+      "enabled": true
+    },
+    {
+      "name": "Dev.to – Hyper-V",
+      "url": "https://dev.to/feed/tag/hyperv",
+      "category": "infrastructure",
+      "enabled": true
+    },
+    {
+      "name": "Zataz",
+      "url": "https://www.zataz.com/feed/",
+      "category": "cybersecurite",
+      "enabled": true
+    },
+    {
+      "name": "Undernews",
+      "url": "https://www.undernews.fr/feed/",
+      "category": "cybersecurite",
+      "enabled": true
+    },
+    {
+      "name": "Le Monde Informatique – Sécurité",
+      "url": "https://www.lemondeinformatique.fr/flux-rss/thematique/securite/rss.xml",
+      "category": "cybersecurite",
+      "enabled": true
+    },
+    {
+      "name": "CERT-FR",
+      "url": "https://www.cert.ssi.gouv.fr/feed/",
+      "category": "cybersecurite",
+      "enabled": true
+    }
+  ],
+  "apiSources": [
+    {
+      "name": "HackerNews Top Stories",
+      "type": "hn",
+      "category": "infrastructure",
+      "enabled": false
+    },
+    {
+      "name": "Reddit r/devops",
+      "type": "reddit",
+      "category": "devops",
+      "enabled": false
+    },
+    {
+      "name": "Reddit r/linux",
+      "type": "reddit",
+      "category": "linux",
+      "enabled": false
+    },
+    {
+      "name": "Reddit r/artificial",
+      "type": "reddit",
+      "category": "ia",
+      "enabled": false
+    }
+  ],
+  "settings": {
+    "refreshInterval": 1800,
+    "maxArticlesPerSource": 20,
+    "totalMaxArticles": 600,
+    "trendingWindowHours": 24
+  }
+}
