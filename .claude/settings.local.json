@@ -14,7 +14,8 @@
       "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('Trending filter:', d['pagination']['total'], 'articles | All trending?', all\\(a.get\\('isTrending'\\) for a in d['articles']\\)\\)\")",
       "Bash(node -e \"try{const p=require\\('./node_modules/@tailwindcss/postcss/package.json'\\);console.log\\('@tailwindcss/postcss:',p.version\\)}catch\\(e\\){console.log\\('NOT installed'\\)}\")",
       "Bash(cmd.exe /c \"taskkill /PID 12600 /F\")",
-      "Bash(powershell.exe -Command \"Stop-Process -Id 12600 -Force -ErrorAction SilentlyContinue; Write-Host 'done'\")"
+      "Bash(powershell.exe -Command \"Stop-Process -Id 12600 -Force -ErrorAction SilentlyContinue; Write-Host 'done'\")",
+      "PowerShell(npm run *)"
     ]
   }
 }

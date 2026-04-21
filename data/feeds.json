@@ -25,6 +25,18 @@
       "enabled": true
     },
     {
+      "name": "L'Usine Digitale",
+      "url": "https://www.usine-digitale.fr/rss/all.xml",
+      "category": "ia",
+      "enabled": true
+    },
+    {
+      "name": "Journal du Net",
+      "url": "https://www.journaldunet.com/rss/",
+      "category": "ia",
+      "enabled": true
+    },
+    {
       "name": "IT-Connect",
       "url": "https://www.it-connect.fr/feed/",
       "category": "devops",
@@ -49,32 +61,26 @@
       "enabled": true
     },
     {
-      "name": "Grotte du Barbu",
-      "url": "https://www.grottedubarbu.fr/feed/",
+      "name": "Human Coders",
+      "url": "https://news.humancoders.com/rss",
       "category": "devops",
       "enabled": true
     },
     {
-      "name": "Dev.to – Ansible",
-      "url": "https://dev.to/feed/tag/ansible",
+      "name": "Xavki",
+      "url": "https://xavki.blog/feed/",
       "category": "devops",
       "enabled": true
     },
     {
-      "name": "Dev.to – Terraform",
-      "url": "https://dev.to/feed/tag/terraform",
+      "name": "WeScale",
+      "url": "https://blog.wescale.fr/feed",
       "category": "devops",
       "enabled": true
     },
     {
-      "name": "Dev.to – Jenkins",
-      "url": "https://dev.to/feed/tag/jenkins",
-      "category": "devops",
-      "enabled": true
-    },
-    {
-      "name": "Dev.to – Docker",
-      "url": "https://dev.to/feed/tag/docker",
+      "name": "Zwindler",
+      "url": "https://blog.zwindler.fr/feed/",
       "category": "devops",
       "enabled": true
     },
@@ -91,8 +97,20 @@
       "enabled": true
     },
     {
+      "name": "Toolinux",
+      "url": "https://www.toolinux.com/?action=syndication",
+      "category": "linux",
+      "enabled": true
+    },
+    {
       "name": "Malekal",
       "url": "https://www.malekal.com/feed/",
+      "category": "windows",
+      "enabled": true
+    },
+    {
+      "name": "IT-Connect – Windows",
+      "url": "https://www.it-connect.fr/category/systemes/windows/feed/",
       "category": "windows",
       "enabled": true
     },
@@ -115,20 +133,8 @@
       "enabled": true
     },
     {
-      "name": "Dev.to – Proxmox",
-      "url": "https://dev.to/feed/tag/proxmox",
-      "category": "infrastructure",
-      "enabled": true
-    },
-    {
-      "name": "Dev.to – OpenStack",
-      "url": "https://dev.to/feed/tag/openstack",
-      "category": "infrastructure",
-      "enabled": true
-    },
-    {
-      "name": "Dev.to – Hyper-V",
-      "url": "https://dev.to/feed/tag/hyperv",
+      "name": "Le Monde Informatique – Infrastructures",
+      "url": "https://www.lemondeinformatique.fr/flux-rss/thematique/infrastructure/rss.xml",
       "category": "infrastructure",
       "enabled": true
     },
@@ -153,6 +159,12 @@
     {
       "name": "CERT-FR",
       "url": "https://www.cert.ssi.gouv.fr/feed/",
+      "category": "cybersecurite",
+      "enabled": true
+    },
+    {
+      "name": "Cyberguerre – Numerama",
+      "url": "https://cyberguerre.numerama.com/feed/",
       "category": "cybersecurite",
       "enabled": true
     }

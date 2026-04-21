@@ -130,54 +130,27 @@ async function fetchRSSFeeds(): Promise<any[]> {
 
   const fetchFeed = async (feed: FeedConfig) => {
     let feedData: any;
-    const maxRetries = 2;
-    for (let attempt = 0; attempt <= maxRetries; attempt++) {
-      try {
-        if (attempt > 0) {
-          await new Promise((resolve) => setTimeout(resolve, 1500 * attempt));
-        }
-
-        // Fetch raw bytes to handle non-UTF-8 encodings
-        const res = await fetch(feed.url, {
-          headers: { 'User-Agent': 'Mozilla/5.0 (compatible; TechNewsHub/1.0)' },
-        });
-        const buffer = Buffer.from(await res.arrayBuffer());
-
-        // Detect encoding: XML declaration takes priority, then HTTP Content-Type
-        // Use binary (latin1) to read header so non-ASCII bytes aren't lost to 'ascii' ?-replacement
-        const head = buffer.subarray(0, 512).toString('binary');
-        const encMatch = head.match(/encoding=["']([^"']+)["']/i);
-        const httpCharset = res.headers.get('content-type')?.match(/charset=([^;\s]+)/i)?.[1];
-        const rawEnc = (encMatch?.[1] ?? httpCharset ?? 'utf-8').toLowerCase().trim();
-        // Normalise: 'latin1' alias not recognised by TextDecoder; windows-1252 correctly
-        // maps 0x80-0x9F (typographic quotes, em-dash…) unlike raw latin1 which leaves them
-        // as XML-illegal control chars that parsers silently replace with '?'
-        const enc = (rawEnc === 'latin1' || rawEnc === 'iso-8859-1' || rawEnc === 'windows-1252')
-          ? 'windows-1252'
-          : rawEnc;
-        let xmlStr: string;
-        try {
-          xmlStr = new TextDecoder(enc).decode(buffer);
-        } catch {
-          xmlStr = new TextDecoder('utf-8').decode(buffer);
-        }
-        feedData = await parser.parseString(xmlStr);
-
-        // Validate that we got a valid feed with items
-        if (feedData?.items && feedData.items.length > 0) {
-          break; // Success
-        } else if (feedData?.items && feedData.items.length === 0) {
-          console.warn(`Feed ${feed.name} returned 0 items`);
-          break;
-        }
-      } catch (err: any) {
-        if (attempt === maxRetries) {
-          console.error(`Error fetching RSS feed ${feed.name} (attempt ${attempt + 1}):`, err?.message || err);
-          return;
-        }
-        // Wait and retry on error
-        console.warn(`Retry ${attempt + 1}/${maxRetries} for ${feed.name}:`, err?.message || err);
-      }
+    try {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 5000);
+      const res = await fetch(feed.url, {
+        signal: controller.signal,
+        headers: { 'User-Agent': 'Mozilla/5.0 (compatible; TechNewsHub/1.0)' },
+      });
+      clearTimeout(timer);
+      const buffer = Buffer.from(await res.arrayBuffer());
+      const head = buffer.subarray(0, 512).toString('binary');
+      const encMatch = head.match(/encoding=["']([^"']+)["']/i);
+      const httpCharset = res.headers.get('content-type')?.match(/charset=([^;\s]+)/i)?.[1];
+      const rawEnc = (encMatch?.[1] ?? httpCharset ?? 'utf-8').toLowerCase().trim();
+      const enc = (rawEnc === 'latin1' || rawEnc === 'iso-8859-1' || rawEnc === 'windows-1252')
+        ? 'windows-1252' : rawEnc;
+      let xmlStr: string;
+      try { xmlStr = new TextDecoder(enc).decode(buffer); }
+      catch { xmlStr = new TextDecoder('utf-8').decode(buffer); }
+      feedData = await parser.parseString(xmlStr);
+    } catch {
+      return;
     }
 
     if (!feedData?.items || feedData.items.length === 0) {
@@ -216,12 +189,7 @@ async function fetchRSSFeeds(): Promise<any[]> {
     }
   };
 
-  // Fetch feeds in parallel (limit concurrency)
-  const batchSize = 5;
-  for (let i = 0; i < enabledFeeds.length; i += batchSize) {
-    const batch = enabledFeeds.slice(i, i + batchSize);
-    await Promise.all(batch.map(fetchFeed));
-  }
+  await Promise.allSettled(enabledFeeds.map(fetchFeed));
 
   return results;
 }
@@ -234,15 +202,19 @@ async function fetchHackerNews(): Promise<any[]> {
     const ids: number[] = await res.json();
     const topIds = ids.slice(0, 30);
 
+    const settled = await Promise.allSettled(
+      topIds.map(id =>
+        fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`, { next: { revalidate: 1800 } })
+          .then(r => r.json())
+      )
+    );
     const stories: any[] = [];
-    for (const id of topIds) {
-      const storyRes = await fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`, {
-        next: { revalidate: 1800 },
-      });
-      const story = await storyRes.json();
+    for (const result of settled) {
+      if (result.status !== 'fulfilled') continue;
+      const story = result.value;
       if (story && story.title && story.url && story.score > 50) {
         stories.push({
-          id: `hn-${id}`,
+          id: `hn-${story.id}`,
           title: story.title,
           description: story.descendants ? `${story.descendants} comments` : '',
           link: story.url,
@@ -326,8 +298,8 @@ async function enrichWithOgImages(articles: any[]): Promise<any[]> {
     } catch { /* timeout or network error — skip */ }
   };
 
-  // Batch of 8 concurrent fetches, max 40 articles
-  const cap = missing.slice(0, 40);
+  // Batch of 8 concurrent fetches, max 10 articles
+  const cap = missing.slice(0, 10);
   for (let i = 0; i < cap.length; i += 8) {
     await Promise.allSettled(cap.slice(i, i + 8).map(fetchOgImage));
   }
@@ -353,6 +325,31 @@ function calculateTrendingScores(articles: any[]): any[] {
   });
 }
 
+async function fetchAndCacheAll(cachePath: string): Promise<any[]> {
+  const [rssArticles, hnArticles, redditDevOps, redditLinux, redditAI] = await Promise.all([
+    fetchRSSFeeds(),
+    fetchHackerNews(),
+    fetchRedditPosts('devops', 'devops'),
+    fetchRedditPosts('linux', 'linux'),
+    fetchRedditPosts('ia', 'artificial'),
+  ]);
+
+  let articles = [...rssArticles, ...hnArticles, ...redditDevOps, ...redditLinux, ...redditAI];
+  articles = calculateTrendingScores(articles);
+
+  const seen = new Set<string>();
+  articles = articles.filter((a) => {
+    if (seen.has(a.link)) return false;
+    seen.add(a.link);
+    return true;
+  });
+
+  const cacheDir = path.join(process.cwd(), '.cache');
+  if (!fs.existsSync(cacheDir)) fs.mkdirSync(cacheDir, { recursive: true });
+  await fs.promises.writeFile(cachePath, JSON.stringify({ articles, timestamp: Date.now() }));
+  return articles;
+}
+
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
   const category = searchParams.get('category') || 'all';
@@ -361,58 +358,25 @@ export async function GET(request: NextRequest) {
   const query = searchParams.get('q') || '';
   const trending = searchParams.get('trending') === 'true';
 
-  // Check cache first
   const cachePath = path.join(process.cwd(), '.cache', 'articles.json');
   let articles: any[] = [];
+  let isStale = false;
 
   try {
     const cacheData = await fs.promises.readFile(cachePath, 'utf-8');
     const parsed = JSON.parse(cacheData);
-    const age = Date.now() - parsed.timestamp;
-
-    if (age < CACHE_TTL * 1000) {
-      articles = parsed.articles;
-    }
+    articles = parsed.articles;
+    isStale = Date.now() - parsed.timestamp >= CACHE_TTL * 1000;
   } catch {
-    // No cache or expired, fetch fresh
+    // No cache yet
   }
 
-  // If no cache, fetch from all sources
   if (articles.length === 0) {
-    const [rssArticles, hnArticles, redditDevOps, redditLinux, redditAI] = await Promise.all([
-      fetchRSSFeeds(),
-      fetchHackerNews(),
-      fetchRedditPosts('devops', 'devops'),
-      fetchRedditPosts('linux', 'linux'),
-      fetchRedditPosts('ia', 'artificial'),
-    ]);
-
-    articles = [...rssArticles, ...hnArticles, ...redditDevOps, ...redditLinux, ...redditAI];
-
-    // Calculate trending scores
-    articles = calculateTrendingScores(articles);
-
-    // Fetch og:image for articles missing a thumbnail
-    articles = await enrichWithOgImages(articles);
-
-    // Deduplicate by link
-    const seen = new Set<string>();
-    articles = articles.filter((a) => {
-      const key = a.link;
-      if (seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    });
-
-    // Save to cache
-    const cacheDir = path.join(process.cwd(), '.cache');
-    if (!fs.existsSync(cacheDir)) {
-      fs.mkdirSync(cacheDir, { recursive: true });
-    }
-    await fs.promises.writeFile(
-      cachePath,
-      JSON.stringify({ articles, timestamp: Date.now() })
-    );
+    // First ever load — must wait
+    articles = await fetchAndCacheAll(cachePath);
+  } else if (isStale) {
+    // Serve stale immediately, refresh in background
+    fetchAndCacheAll(cachePath).catch(console.error);
   }
 
   // Filter by category

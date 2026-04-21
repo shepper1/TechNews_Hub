@@ -64,19 +64,6 @@ C'est tout. Chaque `git push` redéploie automatiquement.
 
 ---
 
-### ⚠️ GitHub Pages — limitations importantes
-
-GitHub Pages ne sert que des fichiers **statiques**. Ce projet utilise des routes API Next.js côté serveur (`/api/articles`) pour agréger les RSS, ce qui est **incompatible** avec un déploiement GitHub Pages standard.
-
-Pour contourner, il faudrait convertir l'app en export statique (build-time RSS fetch), ce qui implique :
-- Supprimer les routes API
-- Pré-générer les articles à chaque build via GitHub Actions (cron)
-- Ajouter `output: 'export'` dans `next.config.ts`
-
-Cette conversion est complexe et casse le cache 30 min ainsi que le filtrage dynamique. **Vercel est fortement recommandé à la place.**
-
----
-
 ### Option alternative — Auto-hébergement (VPS / serveur)
 
 ```bash

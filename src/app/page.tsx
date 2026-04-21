@@ -25,12 +25,12 @@ interface BookmarkState {
 
 const CATEGORIES = [
   { id: 'all',            label: 'Tout',   icon: '🌐' },
-  { id: 'ia',             label: 'IA',     icon: '🤖' },
-  { id: 'devops',         label: 'DevOps', icon: '⚙️' },
-  { id: 'linux',          label: 'Linux',  icon: '🐧' },
-  { id: 'windows',        label: 'Windows',icon: '🪟' },
   { id: 'infrastructure', label: 'Infra',  icon: '☁️' },
+  { id: 'windows',        label: 'Windows',icon: '🪟' },
+  { id: 'linux',          label: 'Linux',  icon: '🐧' },
   { id: 'cybersecurite',  label: 'Cyber',  icon: '🔒' },
+  { id: 'devops',         label: 'DevOps', icon: '⚙️' },
+  { id: 'ia',             label: 'IA',     icon: '🤖' },
 ];
 
 function HomePageContent() {
@@ -39,6 +39,7 @@ function HomePageContent() {
   const [articles,       setArticles]       = useState<Article[]>([]);
   const [loading,        setLoading]        = useState(true);
   const [error,          setError]          = useState<string | null>(null);
+  const [lastUpdated,    setLastUpdated]    = useState<string | null>(null);
   const [searchQuery,    setSearchQuery]    = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
   const [viewMode,       setViewMode]       = useState<'grid' | 'list'>('grid');
@@ -76,6 +77,10 @@ function HomePageContent() {
         if (!res.ok) throw new Error('fetch failed');
         const data = await res.json();
         setArticles(data.articles ?? []);
+        if (data.lastUpdated) {
+          const d = new Date(data.lastUpdated);
+          setLastUpdated(d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }));
+        }
         setError(null);
       } catch {
         setError('Impossible de charger les actualités. Veuillez réessayer.');
@@ -113,9 +118,12 @@ function HomePageContent() {
         <div className="relative container">
           <div className="hero-center">
 
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 14px', borderRadius: '9999px', background: 'var(--color-surface)', border: '1px solid var(--color-border)', marginBottom: '2rem', fontSize: '0.75rem', color: 'var(--color-text-secondary)' }}>
-              <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#4ade80', display: 'inline-block' }} />
-              {loading ? 'Chargement…' : `${articles.length} actualités · mis à jour`}
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '5px 12px', borderRadius: '9999px', background: 'var(--color-surface)', border: '1px solid var(--color-border)', marginBottom: '2rem', fontSize: '0.7rem', color: 'var(--color-text-muted)', letterSpacing: '0.02em' }}>
+              <span style={{ width: 6, height: 6, borderRadius: '50%', background: loading ? '#94a3b8' : '#4ade80', display: 'inline-block', flexShrink: 0 }} />
+              {loading
+                ? 'Chargement…'
+                : <>{articles.length} articles{lastUpdated && <><span style={{ margin: '0 6px', opacity: 0.4 }}>·</span>mis à jour à {lastUpdated}</>}</>
+              }
             </div>
 
             <h1 className="hero-title">
@@ -125,7 +133,7 @@ function HomePageContent() {
             </h1>
 
             <p style={{ fontSize: '1rem', color: 'var(--color-text-secondary)', marginBottom: '2.5rem', lineHeight: 1.7 }}>
-              DevOps · IA · Infrastructure · Linux · Windows — agrégation multi-sources en temps réel.
+              Infrastructure · Windows · Linux · Cyber · DevOps · IA — agrégation multi-sources en temps réel.
             </p>
 
             <div style={{ maxWidth: '36rem', margin: '0 auto' }}>
@@ -150,7 +158,7 @@ function HomePageContent() {
       </section>
 
       {/* ══════════════ CATEGORY + TOOLBAR BAR ══════════════ */}
-      <div className="sticky top-16 z-30 border-b border-[var(--color-border)] bg-[var(--color-surface)] shadow-sm">
+      <div className="sticky top-[52px] z-30 border-b border-[var(--color-border)] bg-[var(--color-surface)] shadow-sm">
         <div className="container">
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.875rem 0', overflowX: 'auto' }} className="scrollbar-hide">
 
@@ -211,7 +219,7 @@ function HomePageContent() {
       </div>
 
       {/* ══════════════ CONTENT ══════════════ */}
-      <section className="container py-10">
+      <section className="container py-5">
 
         {loading && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

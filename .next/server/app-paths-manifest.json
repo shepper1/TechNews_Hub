@@ -1,6 +1,4 @@
 {
   "/api/articles/route": "app/api/articles/route.js",
-  "/page": "app/page.js",
-  "/categories/[category]/page": "app/categories/[category]/page.js",
-  "/favorites/page": "app/favorites/page.js"
+  "/page": "app/page.js"
 }

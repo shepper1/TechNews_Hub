@@ -1,0 +1,46 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Commands
+
+```bash
+npm run dev      # Start dev server at http://localhost:3000
+npm run build    # Production build
+npm start        # Start production server
+npm run lint     # ESLint via Next.js
+```
+
+No test suite is configured.
+
+To force a cache refresh (re-fetch all RSS/API sources), delete the cache file:
+
+```bash
+rm .cache/articles.json
+```
+
+## Architecture
+
+**TechNews Hub** is a Next.js 15 (App Router) tech news aggregator. The core data flow is:
+
+1. **`src/app/api/articles/route.ts`** — single GET endpoint that aggregates from RSS feeds (`rss-parser`), HackerNews Firebase API, and Reddit JSON API. Results are cached to **`.cache/articles.json`** for 30 minutes (TTL = `CACHE_TTL = 1800`). On cache miss, it fetches all sources in parallel, calculates trending scores, enriches missing thumbnails via `og:image` scraping, deduplicates by URL, then persists the cache.
+
+2. **`data/feeds.json`** — single source of truth for RSS feed URLs, categories, and settings (`maxArticlesPerSource`, `totalMaxArticles`, `trendingWindowHours`). Toggling `enabled: false` disables a feed without deleting it.
+
+3. **`src/app/page.tsx`** — client component (`'use client'`) that calls `/api/articles` with query params (`category`, `q`, `trending`, `page`, `limit`). Client-side filtering handles favorites and sort order. Bookmarks are stored in `localStorage` under key `technews-bookmarks`.
+
+4. **`src/app/favorites/page.tsx`** and **`src/app/categories/[category]/page.tsx`** — additional pages sharing the same `/api/articles` endpoint.
+
+5. **`src/components/`** — `ArticleCard`, `Navbar`, `Footer`. No shared state management library; state lives in page components.
+
+## Categories
+
+Valid category values (defined in `src/types/index.ts`): `ia` · `devops` · `linux` · `windows` · `infrastructure` · `all`
+
+## Styling
+
+Tailwind CSS v4 with CSS custom properties for theming (`--color-surface`, `--color-border`, etc.) defined in `src/app/globals.css`. Dark mode is handled client-side via a class toggle persisted in `localStorage`.
+
+## Deployment
+
+Recommended: Vercel (native Next.js API route support). GitHub Pages is incompatible due to server-side API routes.
