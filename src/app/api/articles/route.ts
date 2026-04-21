@@ -326,12 +326,17 @@ function calculateTrendingScores(articles: any[]): any[] {
 }
 
 async function fetchAndCacheAll(cachePath: string): Promise<any[]> {
+  const config = await getFeedsConfig();
+
+  const isEnabled = (type: string) =>
+    config.apiSources.some((s) => s.type === type && s.enabled);
+
   const [rssArticles, hnArticles, redditDevOps, redditLinux, redditAI] = await Promise.all([
     fetchRSSFeeds(),
-    fetchHackerNews(),
-    fetchRedditPosts('devops', 'devops'),
-    fetchRedditPosts('linux', 'linux'),
-    fetchRedditPosts('ia', 'artificial'),
+    isEnabled('hn') ? fetchHackerNews() : Promise.resolve([]),
+    isEnabled('reddit') ? fetchRedditPosts('devops', 'devops') : Promise.resolve([]),
+    isEnabled('reddit') ? fetchRedditPosts('linux', 'linux') : Promise.resolve([]),
+    isEnabled('reddit') ? fetchRedditPosts('ia', 'artificial') : Promise.resolve([]),
   ]);
 
   let articles = [...rssArticles, ...hnArticles, ...redditDevOps, ...redditLinux, ...redditAI];
