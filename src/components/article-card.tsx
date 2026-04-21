@@ -131,13 +131,13 @@ export default function ArticleCard({ article, index, onBookmark, isBookmarked }
 
         {/* Title */}
         <a href={article.link} target="_blank" rel="noopener noreferrer" style={{ display: 'block', marginBottom: '0.5rem' }}>
-          <h3 style={{
+          <h2 style={{
             fontSize: '0.9rem', fontWeight: 700, lineHeight: 1.45,
             color: 'var(--color-text)',
             display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
           }} className="hover:text-indigo-400 transition-colors">
             {article.title}
-          </h3>
+          </h2>
         </a>
 
         {/* Description */}

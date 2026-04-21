@@ -170,7 +170,7 @@ export default function FavoritesPage() {
             <div className="w-16 h-16 rounded-2xl bg-rose-500/10 flex items-center justify-center mb-4">
               <Heart className="w-7 h-7 text-rose-400" />
             </div>
-            <h3 className="text-base font-bold text-[var(--color-text)] mb-2">Aucun favori pour le moment</h3>
+            <h2 className="text-base font-bold text-[var(--color-text)] mb-2">Aucun favori pour le moment</h2>
             <p className="text-sm text-[var(--color-text-secondary)] max-w-sm mb-6">
               Cliquez sur l'icône <Heart className="inline w-3.5 h-3.5 text-amber-400" /> sur les articles qui vous intéressent.
             </p>

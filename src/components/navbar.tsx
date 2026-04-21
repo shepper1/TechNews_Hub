@@ -14,13 +14,14 @@ const navLinkStyle = {
 } as const;
 
 export default function Navbar() {
-  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
+  // Fix #3 : lit data-theme déjà positionné par le script inline pour éviter le flash CLS
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    if (typeof window !== 'undefined') {
+      return (document.documentElement.getAttribute('data-theme') as 'light' | 'dark') ?? 'dark';
+    }
+    return 'dark';
+  });
   const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const saved = localStorage.getItem('technews-theme');
-    setTheme(saved === 'light' ? 'light' : 'dark');
-  }, []);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -65,12 +66,16 @@ export default function Navbar() {
             </Link>
             <button
               onClick={() => setTheme(t => t === 'dark' ? 'light' : 'dark')}
-              style={navLinkStyle}
+              style={{ ...navLinkStyle, width: '6.25rem', justifyContent: 'center' }}
               aria-label={theme === 'dark' ? 'Mode clair' : 'Mode sombre'}
               className="hover:border-indigo-500/50 hover:text-[var(--color-text)]"
+              suppressHydrationWarning
             >
-              {theme === 'dark' ? <Sun style={{ width: 14, height: 14 }} /> : <Moon style={{ width: 14, height: 14 }} />}
-              {theme === 'dark' ? 'Clair' : 'Sombre'}
+              {/* Piloté par CSS + data-theme : pas de flash SSR/hydration */}
+              <Sun className="theme-show-dark" style={{ width: 14, height: 14, flexShrink: 0 }} />
+              <Moon className="theme-show-light" style={{ width: 14, height: 14, flexShrink: 0 }} />
+              <span className="theme-show-dark">Clair</span>
+              <span className="theme-show-light">Sombre</span>
             </button>
           </div>
         </div>
