@@ -47,8 +47,9 @@ interface FeedsConfig {
   };
 }
 
-const CACHE_KEY = 'articles_cache';
 const CACHE_TTL = 1800; // 30 minutes
+// Vercel's filesystem is read-only except /tmp
+const CACHE_DIR = process.env.VERCEL ? '/tmp' : path.join(process.cwd(), '.cache');
 
 async function getFeedsConfig(): Promise<FeedsConfig> {
   const configPath = path.join(process.cwd(), 'data', 'feeds.json');
@@ -244,8 +245,9 @@ async function fetchAndCacheAll(cachePath: string): Promise<any[]> {
     return true;
   });
 
-  const cacheDir = path.join(process.cwd(), '.cache');
-  if (!fs.existsSync(cacheDir)) fs.mkdirSync(cacheDir, { recursive: true });
+  articles = await enrichWithOgImages(articles);
+
+  if (!fs.existsSync(CACHE_DIR)) fs.mkdirSync(CACHE_DIR, { recursive: true });
   await fs.promises.writeFile(cachePath, JSON.stringify({ articles, timestamp: Date.now() }));
   return articles;
 }
@@ -258,7 +260,7 @@ export async function GET(request: NextRequest) {
   const query = searchParams.get('q') || '';
   const trending = searchParams.get('trending') === 'true';
 
-  const cachePath = path.join(process.cwd(), '.cache', 'articles.json');
+  const cachePath = path.join(CACHE_DIR, 'articles.json');
   let articles: any[] = [];
   let isStale = false;
 
