@@ -15,7 +15,18 @@
       "Bash(node -e \"try{const p=require\\('./node_modules/@tailwindcss/postcss/package.json'\\);console.log\\('@tailwindcss/postcss:',p.version\\)}catch\\(e\\){console.log\\('NOT installed'\\)}\")",
       "Bash(cmd.exe /c \"taskkill /PID 12600 /F\")",
       "Bash(powershell.exe -Command \"Stop-Process -Id 12600 -Force -ErrorAction SilentlyContinue; Write-Host 'done'\")",
-      "PowerShell(npm run *)"
+      "PowerShell(npm run *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(npm run *)",
+      "Bash(npm ls *)",
+      "Bash(npm install *)",
+      "Bash(npx lighthouse *)",
+      "Bash(node -e ' *)",
+      "Bash(git mv *)",
+      "Bash(node -e \"const d=require\\('./.cache/articles.json'\\); console.log\\('articles count:', d.articles?.length, 'timestamp:', new Date\\(d.timestamp\\).toISOString\\(\\)\\)\")",
+      "Bash(node -e \"const chunks=[]; process.stdin.on\\('data',c=>chunks.push\\(c\\)\\); process.stdin.on\\('end',\\(\\)=>{const d=JSON.parse\\(Buffer.concat\\(chunks\\)\\); console.log\\('articles in HEAD cache:', d.articles?.length\\)}\\)\")"
     ]
   }
 }
