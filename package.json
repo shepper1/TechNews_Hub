@@ -18,6 +18,21 @@
     "react-dom": "^19.0.0",
     "rss-parser": "^3.13.0"
   },
+  "browserslist": {
+    "production": [
+      "chrome >= 93",
+      "edge >= 93",
+      "firefox >= 92",
+      "safari >= 15.4",
+      "not dead",
+      "> 0.3%"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.2.2",
     "@types/node": "^22.10.5",
