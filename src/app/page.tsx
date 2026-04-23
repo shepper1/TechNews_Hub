@@ -187,7 +187,11 @@ function HomePageContent() {
             ))}
 
             <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
+              <label htmlFor="sort-home" style={{ position: 'absolute', width: '1px', height: '1px', padding: 0, margin: '-1px', overflow: 'hidden', clip: 'rect(0,0,0,0)', whiteSpace: 'nowrap', border: 0 }}>
+                Trier les articles
+              </label>
               <select
+                id="sort-home"
                 value={sortBy}
                 onChange={e => setSortBy(e.target.value as 'date' | 'relevance')}
                 style={{ fontSize: '0.8rem', border: '1.5px solid var(--color-border)', background: 'transparent', color: 'var(--color-text-secondary)', borderRadius: '8px', padding: '7px 10px', cursor: 'pointer', outline: 'none' }}

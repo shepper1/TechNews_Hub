@@ -147,7 +147,9 @@ export default function CategoryPage() {
             </p>
 
             <div className="flex items-center gap-2">
+              <label htmlFor="sort-category" className="sr-only">Trier les articles</label>
               <select
+                id="sort-category"
                 value={sortBy}
                 onChange={e => setSortBy(e.target.value as 'date' | 'relevance')}
                 className="text-xs border border-[var(--color-border)] bg-transparent text-[var(--color-text-secondary)] rounded-lg px-2 py-1.5 cursor-pointer focus:outline-none"
