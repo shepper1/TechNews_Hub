@@ -45,7 +45,6 @@ function HomePageContent() {
   const [bookmarks,      setBookmarks]      = useState<BookmarkState>({});
   const [sortBy,         setSortBy]         = useState<'date' | 'relevance'>('date');
   const [trendingOnly,   setTrendingOnly]   = useState(false);
-  const [favoritesOnly,  setFavoritesOnly]  = useState(false);
 
   /* ── Sync URL params → state (runs when URL changes) ── */
   useEffect(() => {
@@ -97,15 +96,14 @@ function HomePageContent() {
   };
 
   const filteredArticles = useMemo(() => {
-    let list = [...articles];
-    if (favoritesOnly) list = list.filter(a => bookmarks[a.id]);
+    const list = [...articles];
     if (sortBy === 'relevance') {
       list.sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
     } else {
       list.sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime());
     }
     return list;
-  }, [articles, sortBy, favoritesOnly, bookmarks]);
+  }, [articles, sortBy]);
 
   return (
     <div className="min-h-screen">
@@ -246,7 +244,7 @@ function HomePageContent() {
               Essayez de modifier vos filtres ou votre recherche.
             </p>
             <button
-              onClick={() => { setSearchQuery(''); setActiveCategory('all'); setTrendingOnly(false); setFavoritesOnly(false); }}
+              onClick={() => { setSearchQuery(''); setActiveCategory('all'); setTrendingOnly(false); }}
               className="px-5 py-2 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-500 transition-colors"
             >
               Réinitialiser
