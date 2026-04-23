@@ -107,6 +107,7 @@ export default function FavoritesPage() {
               <input
                 type="text"
                 placeholder="Rechercher dans vos favoris…"
+                aria-label="Rechercher dans vos favoris"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
               />
@@ -132,15 +133,17 @@ export default function FavoritesPage() {
             <div className="flex items-center bg-[var(--color-surface-hover)] rounded-lg p-0.5">
               <button
                 onClick={() => setViewMode('grid')}
+                aria-label="Vue grille"
                 className={`p-1.5 rounded-md transition-all ${viewMode === 'grid' ? 'bg-indigo-500 text-white' : 'text-[var(--color-text-muted)]'}`}
               >
-                <Grid className="w-3.5 h-3.5" />
+                <Grid className="w-3.5 h-3.5" aria-hidden="true" />
               </button>
               <button
                 onClick={() => setViewMode('list')}
+                aria-label="Vue liste"
                 className={`p-1.5 rounded-md transition-all ${viewMode === 'list' ? 'bg-indigo-500 text-white' : 'text-[var(--color-text-muted)]'}`}
               >
-                <List className="w-3.5 h-3.5" />
+                <List className="w-3.5 h-3.5" aria-hidden="true" />
               </button>
             </div>
           </div>
@@ -172,7 +175,7 @@ export default function FavoritesPage() {
             </div>
             <h2 className="text-base font-bold text-[var(--color-text)] mb-2">Aucun favori pour le moment</h2>
             <p className="text-sm text-[var(--color-text-secondary)] max-w-sm mb-6">
-              Cliquez sur l'icône <Heart className="inline w-3.5 h-3.5 text-amber-400" /> sur les articles qui vous intéressent.
+              Cliquez sur l'icône <Heart className="inline w-3.5 h-3.5 text-amber-400" aria-hidden="true" /> sur les articles qui vous intéressent.
             </p>
             <Link
               href="/"

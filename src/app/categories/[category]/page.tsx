@@ -124,6 +124,7 @@ export default function CategoryPage() {
               <input
                 type="text"
                 placeholder={`Rechercher dans ${info?.label ?? 'les actualités'}…`}
+                aria-label={`Rechercher dans ${info?.label ?? 'les actualités'}`}
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
               />
@@ -161,15 +162,17 @@ export default function CategoryPage() {
               <div className="flex items-center bg-[var(--color-surface-hover)] rounded-lg p-0.5">
                 <button
                   onClick={() => setViewMode('grid')}
+                  aria-label="Vue grille"
                   className={`p-1.5 rounded-md transition-all ${viewMode === 'grid' ? 'bg-indigo-500 text-white' : 'text-[var(--color-text-muted)]'}`}
                 >
-                  <Grid className="w-3.5 h-3.5" />
+                  <Grid className="w-3.5 h-3.5" aria-hidden="true" />
                 </button>
                 <button
                   onClick={() => setViewMode('list')}
+                  aria-label="Vue liste"
                   className={`p-1.5 rounded-md transition-all ${viewMode === 'list' ? 'bg-indigo-500 text-white' : 'text-[var(--color-text-muted)]'}`}
                 >
-                  <List className="w-3.5 h-3.5" />
+                  <List className="w-3.5 h-3.5" aria-hidden="true" />
                 </button>
               </div>
             </div>

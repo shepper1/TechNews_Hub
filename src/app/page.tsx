@@ -139,6 +139,7 @@ function HomePageContent() {
                 <input
                   type="text"
                   placeholder="Rechercher une actualité, source, sujet…"
+                  aria-label="Rechercher une actualité"
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
                   style={{ paddingTop: '13px', paddingBottom: '13px', fontSize: '0.9rem' }}
