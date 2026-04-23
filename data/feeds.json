@@ -25,12 +25,6 @@
       "enabled": true
     },
     {
-      "name": "L'Usine Digitale",
-      "url": "https://www.usine-digitale.fr/rss/all.xml",
-      "category": "ia",
-      "enabled": true
-    },
-    {
       "name": "Journal du Net",
       "url": "https://www.journaldunet.com/rss/",
       "category": "ia",
@@ -61,12 +55,6 @@
       "enabled": true
     },
     {
-      "name": "Human Coders",
-      "url": "https://news.humancoders.com/rss",
-      "category": "devops",
-      "enabled": true
-    },
-    {
       "name": "Xavki",
       "url": "https://xavki.blog/feed/",
       "category": "devops",
@@ -75,12 +63,6 @@
     {
       "name": "WeScale",
       "url": "https://blog.wescale.fr/feed",
-      "category": "devops",
-      "enabled": true
-    },
-    {
-      "name": "Zwindler",
-      "url": "https://blog.zwindler.fr/feed/",
       "category": "devops",
       "enabled": true
     },
