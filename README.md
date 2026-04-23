@@ -2,7 +2,7 @@
 
 Agrégateur d'actualités tech en temps réel — DevOps, IA, Infrastructure, Linux, Windows.
 
-Sources : flux RSS, HackerNews, Reddit. Cache serveur de 30 minutes. Favoris et thème sombre persistants côté client.
+Sources : flux RSS francophones uniquement (Numerama, LeMonde Informatique, ZDNet France, IT-Connect, LinuxFr, Zataz, CERT-FR…). Cache serveur de 30 minutes. Favoris et thème sombre persistants côté client.
 
 ---
 
@@ -30,7 +30,7 @@ Tout se passe dans **`data/feeds.json`**. Chaque entrée suit ce format :
 }
 ```
 
-Catégories disponibles : `ia` · `devops` · `linux` · `windows` · `infrastructure`
+Catégories disponibles : `ia` · `devops` · `linux` · `windows` · `infrastructure` · `cybersecurite`
 
 Après toute modification, supprime `.cache/articles.json` pour forcer un re-fetch :
 

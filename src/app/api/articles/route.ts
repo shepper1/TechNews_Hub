@@ -37,17 +37,8 @@ interface FeedConfig {
   enabled: boolean;
 }
 
-interface ApiSource {
-  name: string;
-  type: string;
-  url?: string;
-  category: string;
-  enabled: boolean;
-}
-
 interface FeedsConfig {
   feeds: FeedConfig[];
-  apiSources: ApiSource[];
   settings: {
     refreshInterval: number;
     maxArticlesPerSource: number;
@@ -194,91 +185,8 @@ async function fetchRSSFeeds(): Promise<any[]> {
   return results;
 }
 
-async function fetchHackerNews(): Promise<any[]> {
-  try {
-    const res = await fetch('https://hacker-news.firebaseio.com/v0/topstories.json', {
-      next: { revalidate: 1800 },
-    });
-    const ids: number[] = await res.json();
-    const topIds = ids.slice(0, 30);
-
-    const settled = await Promise.allSettled(
-      topIds.map(id =>
-        fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`, { next: { revalidate: 1800 } })
-          .then(r => r.json())
-      )
-    );
-    const stories: any[] = [];
-    for (const result of settled) {
-      if (result.status !== 'fulfilled') continue;
-      const story = result.value;
-      if (story && story.title && story.url && story.score > 50) {
-        stories.push({
-          id: `hn-${story.id}`,
-          title: story.title,
-          description: story.descendants ? `${story.descendants} comments` : '',
-          link: story.url,
-          pubDate: story.time ? new Date(story.time * 1000).toISOString() : new Date().toISOString(),
-          category: 'infrastructure' as const,
-          source: 'HackerNews',
-          imageUrl: undefined,
-          author: 'HackerNews',
-          contentSnippet: story.descendants ? `${story.descendants} comments` : '',
-          score: story.score || 0,
-        });
-      }
-    }
-    return stories;
-  } catch (err) {
-    console.error('Error fetching HackerNews:', err);
-    return [];
-  }
-}
-
-async function fetchRedditPosts(category: string, subreddit: string): Promise<any[]> {
-  try {
-    const res = await fetch(`https://www.reddit.com/r/${subreddit}/new.json?limit=15`, {
-      headers: { 'User-Agent': 'TechNewsHub/1.0 (+https://technews.local)' },
-      next: { revalidate: 1800 },
-    });
-
-    if (!res.ok) {
-      console.error(`Reddit r/${subreddit} returned ${res.status}`);
-      return [];
-    }
-
-    const data = await res.json();
-
-    const posts: any[] = [];
-    if (data?.[1]?.data?.children) {
-      for (const child of data[1].data.children) {
-        const post = child.data;
-        if (post.title && post.url && post.url !== 'selfpost' && !post.url.startsWith('/r/')) {
-          posts.push({
-            id: `reddit-${post.id}`,
-            title: post.title,
-            description: post.selftext ? post.selftext.slice(0, 200) : '',
-            link: `https://reddit.com${post.permalink}`,
-            pubDate: new Date(post.created_utc * 1000).toISOString(),
-            category: category as any,
-            source: `r/${subreddit}`,
-            imageUrl: post.thumbnail && post.thumbnail.startsWith('http') ? post.thumbnail : undefined,
-            author: post.author || 'reddit',
-            contentSnippet: post.selftext ? post.selftext.slice(0, 200) : '',
-            score: post.ups || 0,
-          });
-        }
-      }
-    }
-    return posts;
-  } catch (err) {
-    console.error(`Error fetching Reddit r/${subreddit}:`, err);
-    return [];
-  }
-}
-
 async function enrichWithOgImages(articles: any[]): Promise<any[]> {
-  const missing = articles.filter(a => !a.imageUrl && a.source !== 'HackerNews' && !a.source.startsWith('r/'));
+  const missing = articles.filter(a => !a.imageUrl);
 
   const fetchOgImage = async (article: any): Promise<void> => {
     try {
@@ -326,20 +234,7 @@ function calculateTrendingScores(articles: any[]): any[] {
 }
 
 async function fetchAndCacheAll(cachePath: string): Promise<any[]> {
-  const config = await getFeedsConfig();
-
-  const isEnabled = (type: string) =>
-    config.apiSources.some((s) => s.type === type && s.enabled);
-
-  const [rssArticles, hnArticles, redditDevOps, redditLinux, redditAI] = await Promise.all([
-    fetchRSSFeeds(),
-    isEnabled('hn') ? fetchHackerNews() : Promise.resolve([]),
-    isEnabled('reddit') ? fetchRedditPosts('devops', 'devops') : Promise.resolve([]),
-    isEnabled('reddit') ? fetchRedditPosts('linux', 'linux') : Promise.resolve([]),
-    isEnabled('reddit') ? fetchRedditPosts('ia', 'artificial') : Promise.resolve([]),
-  ]);
-
-  let articles = [...rssArticles, ...hnArticles, ...redditDevOps, ...redditLinux, ...redditAI];
+  let articles = await fetchRSSFeeds();
   articles = calculateTrendingScores(articles);
 
   const seen = new Set<string>();

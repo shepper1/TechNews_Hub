@@ -169,32 +169,6 @@
       "enabled": true
     }
   ],
-  "apiSources": [
-    {
-      "name": "HackerNews Top Stories",
-      "type": "hn",
-      "category": "infrastructure",
-      "enabled": false
-    },
-    {
-      "name": "Reddit r/devops",
-      "type": "reddit",
-      "category": "devops",
-      "enabled": false
-    },
-    {
-      "name": "Reddit r/linux",
-      "type": "reddit",
-      "category": "linux",
-      "enabled": false
-    },
-    {
-      "name": "Reddit r/artificial",
-      "type": "reddit",
-      "category": "ia",
-      "enabled": false
-    }
-  ],
   "settings": {
     "refreshInterval": 1800,
     "maxArticlesPerSource": 20,

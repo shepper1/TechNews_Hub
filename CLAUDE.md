@@ -13,7 +13,7 @@ npm run lint     # ESLint via Next.js
 
 No test suite is configured.
 
-To force a cache refresh (re-fetch all RSS/API sources), delete the cache file:
+To force a cache refresh (re-fetch all RSS feeds), delete the cache file:
 
 ```bash
 rm .cache/articles.json
@@ -23,7 +23,7 @@ rm .cache/articles.json
 
 **TechNews Hub** is a Next.js 15 (App Router) tech news aggregator. The core data flow is:
 
-1. **`src/app/api/articles/route.ts`** — single GET endpoint that aggregates from RSS feeds (`rss-parser`), HackerNews Firebase API, and Reddit JSON API. Results are cached to **`.cache/articles.json`** for 30 minutes (TTL = `CACHE_TTL = 1800`). On cache miss, it fetches all sources in parallel, calculates trending scores, enriches missing thumbnails via `og:image` scraping, deduplicates by URL, then persists the cache.
+1. **`src/app/api/articles/route.ts`** — single GET endpoint that aggregates from francophone RSS feeds only (`rss-parser`). Results are cached to **`.cache/articles.json`** for 30 minutes (TTL = `CACHE_TTL = 1800`). On cache miss, it fetches all feeds in parallel, calculates trending scores, enriches missing thumbnails via `og:image` scraping, deduplicates by URL, then persists the cache.
 
 2. **`data/feeds.json`** — single source of truth for RSS feed URLs, categories, and settings (`maxArticlesPerSource`, `totalMaxArticles`, `trendingWindowHours`). Toggling `enabled: false` disables a feed without deleting it.
 
@@ -35,7 +35,7 @@ rm .cache/articles.json
 
 ## Categories
 
-Valid category values (defined in `src/types/index.ts`): `ia` · `devops` · `linux` · `windows` · `infrastructure` · `all`
+Valid category values (defined in `src/types/index.ts`): `ia` · `devops` · `linux` · `windows` · `infrastructure` · `cybersecurite` · `all`
 
 ## Styling
 
