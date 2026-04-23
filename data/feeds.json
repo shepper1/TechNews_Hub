@@ -79,12 +79,6 @@
       "enabled": true
     },
     {
-      "name": "Toolinux",
-      "url": "https://www.toolinux.com/?action=syndication",
-      "category": "linux",
-      "enabled": true
-    },
-    {
       "name": "Malekal",
       "url": "https://www.malekal.com/feed/",
       "category": "windows",
@@ -109,12 +103,6 @@
       "enabled": true
     },
     {
-      "name": "LeMagIT",
-      "url": "https://www.lemagit.fr/rss/actualites.xml",
-      "category": "infrastructure",
-      "enabled": true
-    },
-    {
       "name": "Le Monde Informatique – Infrastructures",
       "url": "https://www.lemondeinformatique.fr/flux-rss/thematique/infrastructure/rss.xml",
       "category": "infrastructure",
@@ -123,12 +111,6 @@
     {
       "name": "Zataz",
       "url": "https://www.zataz.com/feed/",
-      "category": "cybersecurite",
-      "enabled": true
-    },
-    {
-      "name": "Undernews",
-      "url": "https://www.undernews.fr/feed/",
       "category": "cybersecurite",
       "enabled": true
     },
