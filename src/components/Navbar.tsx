@@ -58,24 +58,25 @@ export default function Navbar() {
           <div className="flex items-center gap-2">
             <Link href="/" style={navLinkStyle} className="hover:border-indigo-500/50 hover:text-[var(--color-text)]">
               <Home style={{ width: 14, height: 14 }} />
-              Accueil
+              <span className="hidden sm:inline">Accueil</span>
             </Link>
             <Link href="/favorites" style={navLinkStyle} className="hover:border-amber-500/50 hover:text-amber-400">
               <Heart style={{ width: 14, height: 14 }} />
-              Favoris
+              <span className="hidden sm:inline">Favoris</span>
             </Link>
             <button
               onClick={() => setTheme(t => t === 'dark' ? 'light' : 'dark')}
-              style={{ ...navLinkStyle, width: '6.25rem', justifyContent: 'center' }}
+              style={{ ...navLinkStyle, justifyContent: 'center' }}
               aria-label={theme === 'dark' ? 'Mode clair' : 'Mode sombre'}
-              className="hover:border-indigo-500/50 hover:text-[var(--color-text)]"
+              className="sm:w-[6.25rem] hover:border-indigo-500/50 hover:text-[var(--color-text)]"
               suppressHydrationWarning
             >
-              {/* Piloté par CSS + data-theme : pas de flash SSR/hydration */}
               <Sun className="theme-show-dark" style={{ width: 14, height: 14, flexShrink: 0 }} />
               <Moon className="theme-show-light" style={{ width: 14, height: 14, flexShrink: 0 }} />
-              <span className="theme-show-dark">Clair</span>
-              <span className="theme-show-light">Sombre</span>
+              <span className="hidden sm:inline">
+                <span className="theme-show-dark">Clair</span>
+                <span className="theme-show-light">Sombre</span>
+              </span>
             </button>
           </div>
         </div>

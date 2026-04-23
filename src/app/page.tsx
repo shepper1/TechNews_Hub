@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import ArticleCard from '@/components/article-card';
-import { Search, X, Grid, List, Flame } from 'lucide-react';
+import { Search, X, Flame } from 'lucide-react';
 
 interface Article {
   id: string;
@@ -42,7 +42,6 @@ function HomePageContent() {
   const [lastUpdated,    setLastUpdated]    = useState<string | null>(null);
   const [searchQuery,    setSearchQuery]    = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
-  const [viewMode,       setViewMode]       = useState<'grid' | 'list'>('grid');
   const [bookmarks,      setBookmarks]      = useState<BookmarkState>({});
   const [sortBy,         setSortBy]         = useState<'date' | 'relevance'>('date');
   const [trendingOnly,   setTrendingOnly]   = useState(false);
@@ -196,23 +195,6 @@ function HomePageContent() {
                 <option value="date">Récent</option>
                 <option value="relevance">Pertinence</option>
               </select>
-
-              <div style={{ display: 'flex', alignItems: 'center', background: 'var(--color-surface-hover)', borderRadius: '8px', padding: '3px' }}>
-                <button
-                  onClick={() => setViewMode('grid')}
-                  style={{ padding: '6px', borderRadius: '6px', border: 'none', cursor: 'pointer', background: viewMode === 'grid' ? '#6366f1' : 'transparent', color: viewMode === 'grid' ? '#fff' : 'var(--color-text-muted)', display: 'flex' }}
-                  aria-label="Vue grille"
-                >
-                  <Grid style={{ width: 14, height: 14 }} />
-                </button>
-                <button
-                  onClick={() => setViewMode('list')}
-                  style={{ padding: '6px', borderRadius: '6px', border: 'none', cursor: 'pointer', background: viewMode === 'list' ? '#6366f1' : 'transparent', color: viewMode === 'list' ? '#fff' : 'var(--color-text-muted)', display: 'flex' }}
-                  aria-label="Vue liste"
-                >
-                  <List style={{ width: 14, height: 14 }} />
-                </button>
-              </div>
             </div>
           </div>
         </div>
@@ -283,11 +265,7 @@ function HomePageContent() {
               )}
             </div>
 
-            <div className={`grid gap-6 ${
-              viewMode === 'grid'
-                ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
-                : 'grid-cols-1 max-w-3xl'
-            }`}>
+            <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
               {filteredArticles.map((article, i) => (
                 <ArticleCard
                   key={article.id}
