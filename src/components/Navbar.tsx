@@ -56,12 +56,12 @@ export default function Navbar() {
 
           {/* Nav links + theme toggle — uniform pill style */}
           <div className="flex items-center gap-2">
-            <Link href="/" style={navLinkStyle} className="hover:border-indigo-500/50 hover:text-[var(--color-text)]">
-              <Home style={{ width: 14, height: 14 }} />
+            <Link href="/" aria-label="Accueil" style={navLinkStyle} className="hover:border-indigo-500/50 hover:text-[var(--color-text)]">
+              <Home style={{ width: 14, height: 14 }} aria-hidden="true" />
               <span className="hidden sm:inline">Accueil</span>
             </Link>
-            <Link href="/favorites" style={navLinkStyle} className="hover:border-amber-500/50 hover:text-amber-400">
-              <Heart style={{ width: 14, height: 14 }} />
+            <Link href="/favorites" aria-label="Favoris" style={navLinkStyle} className="hover:border-amber-500/50 hover:text-amber-400">
+              <Heart style={{ width: 14, height: 14 }} aria-hidden="true" />
               <span className="hidden sm:inline">Favoris</span>
             </Link>
             <button
