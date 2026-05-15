@@ -122,19 +122,24 @@ const AD_CATEGORY_RE = /sponsor|partner|advertorial|promoted|native[- ]?ad/i;
 const AD_TITLE_RE = new RegExp(
   [
     // Editorial markers
-    'partenaire', 'sponsor', 'publi[- ]?report', 'publi[- ]?r[eé]dac',
-    'communiqu[eé] de presse', 'tribune', 'avis d.expert', 'advertorial',
-    // Commercial / promo language
+    'partenaire', 'sponsor(?:is[eé])?', 'publi[- ]?report', 'publi[- ]?r[eé]dac',
+    'communiqu[eé] de presse', '\\[sponso\\]', 'avis d.expert', 'advertorial',
+    // Promo / price drop
+    '\\ben\\s+promo\\b', 'tombe\\s+en\\s+promo', 'est\\s+en\\s+promo',
     'bon\\s*plan', 'bons\\s*plans', 'code\\s*promo', 'meilleur\\s*prix',
     'baisse\\s*(ses|les)\\s*prix', 'jusqu.à\\s*-\\s*\\d+\\s*%',
     '\\d+\\s*%\\s*de\\s*r[eé]duction', 'offre\\s*(sp[eé]ciale|exclusive|limit[eé]e|flash)',
-    'promo\\s*(flash|exceptionnelle)', 'sans\\s*abonnement.*prix',
+    'promo\\s*(flash|exceptionnelle)',
+    // Buying guides
+    'quell?e?s?\\s+sont\\s+les?\\s+meilleures?',
+    'les?\\s+meilleurs?\\s+(?:vpn|antivirus|enceintes?|casques?|[eé]crans?|smartphones?|tablettes?|laptops?|pc\\s+portables?)',
     'meilleur.*vpn', 'vpn.*pas\\s*cher', 'comparatif\\s*(des\\s*)?meilleur',
+    '\\d+\\s+(?:mod[eè]les?|produits?|options?)\\s+(?:à\\s+)?(?:acheter|tester|essayer)',
   ].join('|'),
   'i'
 );
 
-const AD_URL_RE = /bon-plan|code-promo|baisse-ses-prix|meilleur-prix|moins-cher|expressvpn|nordvpn|surfshark|cyberghost|ipvanish|purevpn/i;
+const AD_URL_RE = /\ben-promo\b|tombe-en|bon-plan|code-promo|baisse-ses-prix|meilleur-prix|moins-cher|quelles?-sont-les-meilleures?|expressvpn|nordvpn|surfshark|cyberghost|ipvanish|purevpn/i;
 
 // ── Keyword-based category classification ────────────────────────────────────
 
