@@ -115,6 +115,64 @@ function cleanDescription(text: string | null): string {
   return decoded.slice(0, 300) + (decoded.length > 300 ? '…' : '');
 }
 
+// ── Ad / sponsored content filters ──────────────────────────────────────────
+
+const AD_CATEGORY_RE = /sponsor|partner|advertorial|promoted|native[- ]?ad/i;
+
+const AD_TITLE_RE = new RegExp(
+  [
+    // Editorial markers
+    'partenaire', 'sponsor', 'publi[- ]?report', 'publi[- ]?r[eé]dac',
+    'communiqu[eé] de presse', 'tribune', 'avis d.expert', 'advertorial',
+    // Commercial / promo language
+    'bon\\s*plan', 'bons\\s*plans', 'code\\s*promo', 'meilleur\\s*prix',
+    'baisse\\s*(ses|les)\\s*prix', 'jusqu.à\\s*-\\s*\\d+\\s*%',
+    '\\d+\\s*%\\s*de\\s*r[eé]duction', 'offre\\s*(sp[eé]ciale|exclusive|limit[eé]e|flash)',
+    'promo\\s*(flash|exceptionnelle)', 'sans\\s*abonnement.*prix',
+    'meilleur.*vpn', 'vpn.*pas\\s*cher', 'comparatif\\s*(des\\s*)?meilleur',
+  ].join('|'),
+  'i'
+);
+
+const AD_URL_RE = /bon-plan|code-promo|baisse-ses-prix|meilleur-prix|moins-cher|expressvpn|nordvpn|surfshark|cyberghost|ipvanish|purevpn/i;
+
+// ── Keyword-based category classification ────────────────────────────────────
+
+const CATEGORY_PATTERNS: Array<{ category: string; re: RegExp }> = [
+  {
+    category: 'cybersecurite',
+    re: /cybers[eé]curit[eé]|vuln[eé]rabilit[eé]|ransomware|rançongiciel|malware|logiciel\s*malveillant|phishing|hameçonnage|faille\s*(?:de\s*s[eé]curit[eé])?|hack(?:er|ing|é)|CVE-\d|zero[- ]?day|breach|violation\s*de\s*donn[eé]es|attaque\s*inform|DDoS|CERT\b|ANSSI\b/i,
+  },
+  {
+    category: 'ia',
+    re: /intelligence\s*artificielle|\bIA\b|machine[\s-]?learning|deep[\s-]?learning|\bLLM\b|GPT-?[0-9o]|ChatGPT|Gemini|Mistral|Copilot|g[eé]n[eé]ratif|modèle\s+de\s+langage|réseau\s+de\s+neurones|agent\s+(?:ia|ai)|Llama\b|Ollama\b/i,
+  },
+  {
+    category: 'devops',
+    re: /\bDevOps\b|Docker|Kubernetes|\bK8s?\b|Terraform|Ansible|Jenkins|\bCI[/\s]?CD\b|conteneuris|microservice|GitOps|ArgoCD|Helm\b|Prometheus\b|Grafana\b/i,
+  },
+  {
+    category: 'linux',
+    re: /\bLinux\b|Ubuntu|Debian|Fedora|Red\s*Hat|openSUSE|Arch\s*Linux|kernel\s+Linux|distributions?\s+Linux|\bGNU\b/i,
+  },
+  {
+    category: 'windows',
+    re: /\bWindows\s*(?:10|11|Server|\d{4})?\b|PowerShell|Active\s*Directory|\bIntune\b|Microsoft\s*(?:365|Office|Teams|Outlook|Defender)/i,
+  },
+  {
+    category: 'infrastructure',
+    re: /\bCloud\b|AWS\b|Amazon\s*Web\s*Services|Google\s*Cloud|GCP\b|\bAzure\b(?!\s*AD)|datacenter|data\s*center|virtualisation|VMware|hyperviseur|\bCDN\b|on[- ]?premise|réseau\s*(?:d.entreprise|SD-WAN)|stockage\s*(?:objet|réseau|SAN|NAS)/i,
+  },
+];
+
+function classifyArticle(title: string, description: string, feedCategory: string): string {
+  const text = title + ' ' + description;
+  for (const { category, re } of CATEGORY_PATTERNS) {
+    if (re.test(text)) return category;
+  }
+  return feedCategory;
+}
+
 async function fetchRSSFeeds(): Promise<any[]> {
   const config = await getFeedsConfig();
   const enabledFeeds = config.feeds.filter((f) => f.enabled);
@@ -151,22 +209,26 @@ async function fetchRSSFeeds(): Promise<any[]> {
 
     const items = feedData.items.slice(0, config.settings.maxArticlesPerSource);
 
-    const AD_TITLE = /partenaire|sponsor|publi.report|publi.r[eé]dac|communiqu[eé] de presse|tribune|avis d.expert|advertorial/i;
-    const AD_CATEGORY = /sponsor|partner|advertorial|promoted|native.ad/i;
-
     for (const item of items) {
-      // Skip sponsored / advertorial content
-      const cats: string[] = ([] as string[]).concat(item.categories || item.category || []);
-      if (cats.some(c => AD_CATEGORY.test(c))) continue;
+      const title = item.title || '';
+      const link = item.link || '';
 
-      // Extract description from various fields
-      let desc = item.description || item['content:encoded'] || item.contentSnippet || '';
-      const imageUrl = extractImageUrl(item as FeedEntry);
+      // Filter by RSS category tag
+      const cats: string[] = ([] as string[]).concat(item.categories || item.category || []);
+      if (cats.some(c => AD_CATEGORY_RE.test(c))) continue;
+
+      // Filter by URL slug
+      if (AD_URL_RE.test(link)) continue;
+
+      // Extract description before title/desc content check
+      const desc = item.description || item['content:encoded'] || item.contentSnippet || '';
       const description = cleanDescription(desc);
 
-      if (AD_TITLE.test(item.title || '') || AD_TITLE.test(description)) continue;
+      // Filter by title or description
+      if (AD_TITLE_RE.test(title) || AD_TITLE_RE.test(description)) continue;
 
-      // Extract author
+      const imageUrl = extractImageUrl(item as FeedEntry);
+
       let author = '';
       if (item.creator) {
         author = Array.isArray(item.creator) ? item.creator[0] : item.creator;
@@ -174,13 +236,15 @@ async function fetchRSSFeeds(): Promise<any[]> {
         author = Array.isArray(item['dc:creator']) ? item['dc:creator'][0] : item['dc:creator'];
       }
 
+      const category = classifyArticle(decodeEntities(title), description, feed.category);
+
       results.push({
-        id: `rss-${feed.name}-${item.link}-${item.pubDate}`,
-        title: decodeEntities(item.title || 'Untitled'),
+        id: `rss-${feed.name}-${link}-${item.pubDate}`,
+        title: decodeEntities(title),
         description,
-        link: item.link || '',
+        link,
         pubDate: item.pubDate || new Date().toISOString(),
-        category: feed.category as any,
+        category,
         source: feed.name,
         imageUrl,
         author: author || feed.name,
