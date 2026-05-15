@@ -151,11 +151,20 @@ async function fetchRSSFeeds(): Promise<any[]> {
 
     const items = feedData.items.slice(0, config.settings.maxArticlesPerSource);
 
+    const AD_TITLE = /partenaire|sponsor|publi.report|publi.r[eé]dac|communiqu[eé] de presse|tribune|avis d.expert|advertorial/i;
+    const AD_CATEGORY = /sponsor|partner|advertorial|promoted|native.ad/i;
+
     for (const item of items) {
+      // Skip sponsored / advertorial content
+      const cats: string[] = ([] as string[]).concat(item.categories || item.category || []);
+      if (cats.some(c => AD_CATEGORY.test(c))) continue;
+
       // Extract description from various fields
       let desc = item.description || item['content:encoded'] || item.contentSnippet || '';
       const imageUrl = extractImageUrl(item as FeedEntry);
       const description = cleanDescription(desc);
+
+      if (AD_TITLE.test(item.title || '') || AD_TITLE.test(description)) continue;
 
       // Extract author
       let author = '';
